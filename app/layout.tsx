@@ -1,25 +1,26 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Cormorant_Garamond, Dancing_Script } from "next/font/google"
+import { Cormorant_Garamond } from "next/font/google"
+import localFont from "next/font/local"
 import "./globals.css"
 
-const cormorant = Cormorant_Garamond({
+const CormorantGaramondFont = Cormorant_Garamond({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-cormorant",
   weight: ["300", "400", "500", "600", "700"],
 })
 
-const dancingScript = Dancing_Script({
-  subsets: ["latin"],
+const Revive80SignatureFont = localFont({
+  src: '../public/Revive80signature.otf',
   display: "swap",
-  variable: "--font-dancing",
+  weight: "400",
+  variable: "--font-revive80signature",
 })
 
 export const metadata: Metadata = {
   title: "Amy & Daniel - Wedding",
   description: "Join us for our special day",
-  generator: "v0.app",
 }
 
 export default function RootLayout({
@@ -28,18 +29,18 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${dancingScript.variable}`}>
+    <html lang="en" className={`${CormorantGaramondFont.variable} ${Revive80SignatureFont.variable}`}>
       <head>
         <style>{`
 html {
-  font-family: ${cormorant.style.fontFamily};
-  --font-sans: ${cormorant.variable};
-  --font-serif: ${cormorant.variable};
-  --font-script: ${dancingScript.variable};
+  font-family: ${CormorantGaramondFont.style.fontFamily};
+  --font-sans: ${CormorantGaramondFont.variable};
+  --font-serif: ${CormorantGaramondFont.variable};
+  --font-script: ${Revive80SignatureFont.variable};
 }
         `}</style>
       </head>
-      <body className="font-sans">{children}</body>
+      <body className="font-serif">{children}</body>
     </html>
   )
 }
