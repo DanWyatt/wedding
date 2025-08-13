@@ -8,7 +8,6 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 
 const navLinks = [
-  { name: "Home", href: "/" },
   { name: "Menu", href: "/menu" },
   { name: "Ceremony", href: "/ceremony" },
   { name: "Reception", href: "/reception" },
@@ -20,25 +19,26 @@ const navLinks = [
 export function FloatingNavbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const pathname = usePathname()
-  const isHomePage = pathname === "/"
+  const isHomePage = usePathname() === "/"
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50)
-    }
+  if (isHomePage) {
+    useEffect(() => {
+      const handleScroll = () => {
+        setIsScrolled(window.scrollY > 50)
+      }
 
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+      window.addEventListener("scroll", handleScroll)
+      return () => window.removeEventListener("scroll", handleScroll)
+    }, [])
+  }
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen)
   }
 
-  const isLargeNavbar = isHomePage && !isScrolled
-  const textColor = isLargeNavbar ? "text-white" : "text-wedding-text"
-  const logoSize = isLargeNavbar ? "text-8xl" : "text-4xl"
+  const isLargeNavbar = usePathname() === "/" && !isScrolled
+  const textColor = isLargeNavbar && !isMobileMenuOpen ? "text-white" : "text-wedding-text"
+  const logoSize = isLargeNavbar ? "text-4xl md:text-6xl" : "text-4xl"
   const dropShadow = isLargeNavbar ? "drop-shadow-lg" : ""
 
   return (
@@ -46,7 +46,7 @@ export function FloatingNavbar() {
       <nav
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out",
-          isScrolled ? "bg-wedding-cream/95 backdrop-blur-sm shadow-lg py-3" : "bg-transparent py-6",
+          !isHomePage || isScrolled ? "bg-wedding-cream/95 backdrop-blur-sm shadow-lg py-3" : "bg-transparent py-6",
         )}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -99,7 +99,7 @@ export function FloatingNavbar() {
                 onClick={toggleMobileMenu}
                 className={cn(
                   "hover:text-wedding-accent transition-colors",
-                  isLargeNavbar ? "text-white drop-shadow-md" : "text-wedding-text",
+                  isLargeNavbar && !isMobileMenuOpen ? "text-white drop-shadow-md" : "text-wedding-text",
                 )}
               >
                 {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
