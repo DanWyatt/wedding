@@ -21,6 +21,7 @@ const Revive80SignatureFont = localFont({
 export const metadata: Metadata = {
   title: "Amy & Daniel - Wedding",
   description: "Join us for our special day",
+    generator: 'v0.app'
 }
 
 export default function RootLayout({

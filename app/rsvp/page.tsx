@@ -7,7 +7,33 @@ import { FloatingNavbar } from "@/components/floating-navbar"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 
+interface Attendee {
+  id: string
+  name: string
+  email: string
+  dietaryRestrictions: string
+  plusOne: boolean
+  ceremony: boolean
+  reception: boolean
+  dancing: boolean
+}
+
+type ModalType = "add" | "edit" | "delete" | null
+
 export default function RSVPPage() {
+  const [attendees, setAttendees] = useState<Attendee[]>([])
+  const [modalType, setModalType] = useState<ModalType>(null)
+  const [editingAttendee, setEditingAttendee] = useState<Attendee | null>(null)
+  const [attendeeForm, setAttendeeForm] = useState({
+    name: "",
+    email: "",
+    dietaryRestrictions: "",
+    plusOne: false,
+    ceremony: false,
+    reception: false,
+    dancing: false,
+  })
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -25,6 +51,75 @@ export default function RSVPPage() {
     type: "success" | "error" | null
     message: string
   }>({ type: null, message: "" })
+
+  const openAddModal = () => {
+    setAttendeeForm({
+      name: "",
+      email: "",
+      dietaryRestrictions: "",
+      plusOne: false,
+      ceremony: false,
+      reception: false,
+      dancing: false,
+    })
+    setModalType("add")
+  }
+
+  const openEditModal = (attendee: Attendee) => {
+    setEditingAttendee(attendee)
+    setAttendeeForm({
+      name: attendee.name,
+      email: attendee.email,
+      dietaryRestrictions: attendee.dietaryRestrictions,
+      plusOne: attendee.plusOne,
+      ceremony: attendee.ceremony,
+      reception: attendee.reception,
+      dancing: attendee.dancing,
+    })
+    setModalType("edit")
+  }
+
+  const openDeleteModal = (attendee: Attendee) => {
+    setEditingAttendee(attendee)
+    setModalType("delete")
+  }
+
+  const closeModal = () => {
+    setModalType(null)
+    setEditingAttendee(null)
+  }
+
+  const handleAttendeeFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value, type } = e.target
+    const checked = (e.target as HTMLInputElement).checked
+
+    setAttendeeForm((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }))
+  }
+
+  const saveAttendee = () => {
+    if (modalType === "add") {
+      const newAttendee: Attendee = {
+        id: Date.now().toString(),
+        ...attendeeForm,
+      }
+      setAttendees((prev) => [...prev, newAttendee])
+    } else if (modalType === "edit" && editingAttendee) {
+      setAttendees((prev) =>
+        prev.map((a) => (a.id === editingAttendee.id ? { ...editingAttendee, ...attendeeForm } : a)),
+      )
+    }
+    closeModal()
+  }
+
+  const deleteAttendee = () => {
+    if (editingAttendee) {
+      setAttendees((prev) => prev.filter((a) => a.id !== editingAttendee.id))
+    }
+    closeModal()
+  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -48,12 +143,17 @@ export default function RSVPPage() {
     setSubmitStatus({ type: null, message: "" })
 
     try {
+      const submissionData = {
+        ...formData,
+        attendees,
+      }
+
       const response = await fetch("/api/rsvp", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(submissionData),
       })
 
       const result = await response.json()
@@ -75,6 +175,7 @@ export default function RSVPPage() {
           message: "",
           events: [],
         })
+        setAttendees([])
       } else {
         setSubmitStatus({
           type: "error",
@@ -165,6 +266,55 @@ export default function RSVPPage() {
                   />
                 </div>
               </div>
+            </div>
+
+            <div className="bg-white/50 p-8 rounded-lg">
+              <h2 className="font-serif text-2xl text-wedding-text mb-6">Attendees</h2>
+
+              {attendees.length === 0 ? (
+                <p className="text-wedding-text/70 text-center py-8">No attendees added yet</p>
+              ) : (
+                <div className="space-y-3 mb-6">
+                  {attendees.map((attendee) => (
+                    <div
+                      key={attendee.id}
+                      className="group flex items-center justify-between p-4 bg-white rounded-lg border border-wedding-text/20 hover:border-wedding-accent/50 transition-all"
+                    >
+                      <div className="flex-1">
+                        <h3 className="font-medium text-wedding-text">{attendee.name}</h3>
+                        <p className="text-sm text-wedding-text/70">{attendee.email}</p>
+                        {attendee.dietaryRestrictions && (
+                          <p className="text-sm text-wedding-text/60">Dietary: {attendee.dietaryRestrictions}</p>
+                        )}
+                      </div>
+                      <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => openEditModal(attendee)}
+                          className="px-3 py-1 text-sm bg-wedding-accent/10 text-wedding-accent rounded hover:bg-wedding-accent/20 transition-colors"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => openDeleteModal(attendee)}
+                          className="px-3 py-1 text-sm bg-red-100 text-red-600 rounded hover:bg-red-200 transition-colors"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <button
+                type="button"
+                onClick={openAddModal}
+                className="w-full py-3 border-2 border-dashed border-wedding-accent/50 text-wedding-accent rounded-lg hover:border-wedding-accent hover:bg-wedding-accent/5 transition-all"
+              >
+                + Add Attendee
+              </button>
             </div>
 
             {/* Attendance */}
@@ -344,6 +494,143 @@ export default function RSVPPage() {
           </form>
         </div>
       </div>
+
+      {modalType && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          {(modalType === "add" || modalType === "edit") && (
+            <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+              <h3 className="font-serif text-xl text-wedding-text mb-4">
+                {modalType === "add" ? "Add Attendee" : "Edit Attendee"}
+              </h3>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-wedding-text font-medium mb-2">Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={attendeeForm.name}
+                    onChange={handleAttendeeFormChange}
+                    className="w-full px-3 py-2 border border-wedding-text/20 rounded focus:outline-none focus:ring-2 focus:ring-wedding-accent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-wedding-text font-medium mb-2">Email</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={attendeeForm.email}
+                    onChange={handleAttendeeFormChange}
+                    className="w-full px-3 py-2 border border-wedding-text/20 rounded focus:outline-none focus:ring-2 focus:ring-wedding-accent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-wedding-text font-medium mb-2">Dietary Restrictions</label>
+                  <textarea
+                    name="dietaryRestrictions"
+                    value={attendeeForm.dietaryRestrictions}
+                    onChange={handleAttendeeFormChange}
+                    rows={2}
+                    className="w-full px-3 py-2 border border-wedding-text/20 rounded focus:outline-none focus:ring-2 focus:ring-wedding-accent resize-none"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="plusOne"
+                      checked={attendeeForm.plusOne}
+                      onChange={handleAttendeeFormChange}
+                      className="mr-2"
+                    />
+                    <span className="text-wedding-text">Plus One</span>
+                  </label>
+
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="ceremony"
+                      checked={attendeeForm.ceremony}
+                      onChange={handleAttendeeFormChange}
+                      className="mr-2"
+                    />
+                    <span className="text-wedding-text">Ceremony</span>
+                  </label>
+
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="reception"
+                      checked={attendeeForm.reception}
+                      onChange={handleAttendeeFormChange}
+                      className="mr-2"
+                    />
+                    <span className="text-wedding-text">Reception</span>
+                  </label>
+
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="dancing"
+                      checked={attendeeForm.dancing}
+                      onChange={handleAttendeeFormChange}
+                      className="mr-2"
+                    />
+                    <span className="text-wedding-text">Dancing</span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-6">
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  className="flex-1 px-4 py-2 border border-wedding-text/20 text-wedding-text rounded hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={saveAttendee}
+                  className="flex-1 px-4 py-2 bg-wedding-accent text-white rounded hover:bg-wedding-accent/90 transition-colors"
+                >
+                  {modalType === "add" ? "Add" : "Save"}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {modalType === "delete" && editingAttendee && (
+            <div className="bg-white rounded-lg p-6 w-full max-w-sm">
+              <h3 className="font-serif text-xl text-wedding-text mb-4">Confirm Delete</h3>
+              <p className="text-wedding-text/70 mb-6">
+                Are you sure you want to remove {editingAttendee.name} from the attendee list?
+              </p>
+
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  className="flex-1 px-4 py-2 border border-wedding-text/20 text-wedding-text rounded hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={deleteAttendee}
+                  className="flex-1 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       <Footer />
     </main>
   )
