@@ -6,6 +6,7 @@ import { useState } from "react"
 import { FloatingNavbar } from "@/components/floating-navbar"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 
 interface Attendee {
   id: string
@@ -535,52 +536,6 @@ export default function RSVPPage() {
                     rows={2}
                     className="w-full px-3 py-2 border border-wedding-text/20 rounded focus:outline-none focus:ring-2 focus:ring-wedding-accent resize-none"
                   />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
-                      name="plusOne"
-                      checked={attendeeForm.plusOne}
-                      onChange={handleAttendeeFormChange}
-                      className="mr-2"
-                    />
-                    <span className="text-wedding-text">Plus One</span>
-                  </label>
-
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
-                      name="ceremony"
-                      checked={attendeeForm.ceremony}
-                      onChange={handleAttendeeFormChange}
-                      className="mr-2"
-                    />
-                    <span className="text-wedding-text">Ceremony</span>
-                  </label>
-
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
-                      name="reception"
-                      checked={attendeeForm.reception}
-                      onChange={handleAttendeeFormChange}
-                      className="mr-2"
-                    />
-                    <span className="text-wedding-text">Reception</span>
-                  </label>
-
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
-                      name="dancing"
-                      checked={attendeeForm.dancing}
-                      onChange={handleAttendeeFormChange}
-                      className="mr-2"
-                    />
-                    <span className="text-wedding-text">Dancing</span>
-                  </label>
                 </div>
               </div>
 
