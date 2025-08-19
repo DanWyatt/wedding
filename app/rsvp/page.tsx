@@ -126,75 +126,6 @@ export default function RSVPPage() {
     message: string
   }>({ type: null, message: "" })
 
-  const openAddModal = () => {
-    setAttendeeForm({
-      name: "",
-      email: "",
-      dietaryRestrictions: "",
-      plusOne: false,
-      ceremony: false,
-      reception: false,
-      dancing: false,
-    })
-    setModalType("add")
-  }
-
-  const openEditModal = (attendee: Attendee) => {
-    setEditingAttendee(attendee)
-    setAttendeeForm({
-      name: attendee.name,
-      email: attendee.email,
-      dietaryRestrictions: attendee.dietaryRestrictions,
-      plusOne: attendee.plusOne,
-      ceremony: attendee.ceremony,
-      reception: attendee.reception,
-      dancing: attendee.dancing,
-    })
-    setModalType("edit")
-  }
-
-  const openDeleteModal = (attendee: Attendee) => {
-    setEditingAttendee(attendee)
-    setModalType("delete")
-  }
-
-  const closeModal = () => {
-    setModalType(null)
-    setEditingAttendee(null)
-  }
-
-  const handleAttendeeFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value, type } = e.target
-    const checked = (e.target as HTMLInputElement).checked
-
-    setAttendeeForm((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }))
-  }
-
-  const saveAttendee = () => {
-    if (modalType === "add") {
-      const newAttendee: Attendee = {
-        id: Date.now().toString(),
-        ...attendeeForm,
-      }
-      setAttendees((prev) => [...prev, newAttendee])
-    } else if (modalType === "edit" && editingAttendee) {
-      setAttendees((prev) =>
-        prev.map((a) => (a.id === editingAttendee.id ? { ...editingAttendee, ...attendeeForm } : a)),
-      )
-    }
-    closeModal()
-  }
-
-  const deleteAttendee = () => {
-    if (editingAttendee) {
-      setAttendees((prev) => prev.filter((a) => a.id !== editingAttendee.id))
-    }
-    closeModal()
-  }
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
@@ -272,17 +203,12 @@ export default function RSVPPage() {
     setSubmitStatus({ type: null, message: "" })
 
     try {
-      const submissionData = {
-        ...formData,
-        attendees,
-      }
-
       const response = await fetch("/api/rsvp", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(submissionData),
+        body: JSON.stringify(formData),
       })
 
       const result = await response.json()
@@ -353,55 +279,6 @@ export default function RSVPPage() {
                   />
                 </div>
               </div>
-            </div>
-
-            <div className="bg-white/50 p-8 rounded-lg">
-              <h2 className="font-serif text-2xl text-wedding-text mb-6">Attendees</h2>
-
-              {attendees.length === 0 ? (
-                <p className="text-wedding-text/70 text-center py-8">No attendees added yet</p>
-              ) : (
-                <div className="space-y-3 mb-6">
-                  {attendees.map((attendee) => (
-                    <div
-                      key={attendee.id}
-                      className="group flex items-center justify-between p-4 bg-white rounded-lg border border-wedding-text/20 hover:border-wedding-accent/50 transition-all"
-                    >
-                      <div className="flex-1">
-                        <h3 className="font-medium text-wedding-text">{attendee.name}</h3>
-                        <p className="text-sm text-wedding-text/70">{attendee.email}</p>
-                        {attendee.dietaryRestrictions && (
-                          <p className="text-sm text-wedding-text/60">Dietary: {attendee.dietaryRestrictions}</p>
-                        )}
-                      </div>
-                      <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
-                        <button
-                          type="button"
-                          onClick={() => openEditModal(attendee)}
-                          className="px-3 py-1 text-sm bg-wedding-accent/10 text-wedding-accent rounded hover:bg-wedding-accent/20 transition-colors"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => openDeleteModal(attendee)}
-                          className="px-3 py-1 text-sm bg-red-100 text-red-600 rounded hover:bg-red-200 transition-colors"
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              <button
-                type="button"
-                onClick={openAddModal}
-                className="w-full py-3 border-2 border-dashed border-wedding-accent/50 text-wedding-accent rounded-lg hover:border-wedding-accent hover:bg-wedding-accent/5 transition-all"
-              >
-                + Add Attendee
-              </button>
             </div>
 
             {/* Attendance */}
