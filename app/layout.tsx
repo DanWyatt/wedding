@@ -32,12 +32,12 @@ export default function RootLayout({
     <html lang="en" className={`${CormorantGaramondFont.variable} ${Revive80SignatureFont.variable}`}>
       <head>
         <style>{`
-html {
-  font-family: ${CormorantGaramondFont.style.fontFamily};
-  --font-sans: ${CormorantGaramondFont.variable};
-  --font-serif: ${CormorantGaramondFont.variable};
-  --font-script: ${Revive80SignatureFont.variable};
-}
+          html {
+            font-family: ${CormorantGaramondFont.style.fontFamily};
+            --font-sans: ${CormorantGaramondFont.variable};
+            --font-serif: ${CormorantGaramondFont.variable};
+            --font-script: ${Revive80SignatureFont.variable};
+          }
         `}</style>
       </head>
       <body className="font-serif">{children}</body>
