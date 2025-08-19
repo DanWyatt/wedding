@@ -6,19 +6,119 @@ import { useState } from "react"
 import { FloatingNavbar } from "@/components/floating-navbar"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
+import { LargeButton } from "@/components/ui/rsvp/large-button"
+
+interface MealChoice {
+  name: string,
+  description: string,
+  notSuitableFor: string[],
+}
+
+interface MealChoices {
+  [key: string]: MealChoice;
+};
+
+const Starters = {
+  GoatsCheeseTartlet: {
+    name: 'Goat’s cheese tartlet',
+    description: 'Goat’s cheese and sundried tomato tartlet, rocket salad and basil mayo (v)',
+    notSuitableFor: ['vegan'],
+  },
+  PrawnCocktail: {
+    name: 'Prawn cocktail',
+    description: 'Prawn cocktail, smoked salmon shavings',
+    notSuitableFor: ['vegetarian', 'vegan', 'fish', 'crustaceans'],
+  },
+} as MealChoices
+
+const Mains = {
+  PorkPlatter: {
+    name: 'Roast Pork Sharing Platter',
+    description: 'Joints of slow roasted Somerset pork with thyme & apricots',
+    notSuitableFor: ['vegetarian', 'vegan'],
+  },
+  MushroomWellington: {
+    name: 'Mushroom Wellington',
+    description: 'A meat-free twist on the classic',
+    notSuitableFor: [],
+  },
+} as MealChoices
+
+const Desserts = {
+  Profiteroles: {
+    name: 'Profiteroles',
+    description: 'Cream filled profiteroles served with warm chocolate sauce (v)',
+    notSuitableFor: ['dairy', 'vegan'],
+  },
+  Pavlova: {
+    name: 'Berry pavlova',
+    description: 'Served with raspberry coulis (v)',
+    notSuitableFor: ['vegan'],
+  },
+  LemonTart: {
+    name: 'Lemon tart',
+    description: 'Served with raspberry coulis and lemon sorbet (v)',
+    notSuitableFor: ['vegan'],
+  },
+} as MealChoices
+
+const DietaryRestrictions: {
+  readonly [key: string]: {
+    readonly label: string;
+    readonly description?: string;
+  };
+} = {
+  vegetarian: {label: "Vegetarian"},
+  vegan: {label: "Vegan"},
+  gluten: {label: "No Gluten"},
+  peanut: {label: "No Peanut"},
+  nuts: {label: "No Nuts"},
+  sesame: {label: "No sesasme"},
+  soya: {label: "No soya"},
+  egg: {label: "No egg"},
+  dairy: {label: "No dairy"},
+  fish: {label: "No fish"},
+  celery: {label: "No celery"},
+  lupin: {label: "No lupin"},
+  mustard: {label: "No mustard"},
+  crustaceans: {label: "No crustaceans", description: "(i.e. prawn, crab etc)"},
+  molluscs: {label: "No molluscs", description: "(i.e. mussels, oyster etc)"},
+  sulphurDioxide: {label: "No sulphites", description: "(sulphur dioxide)"},
+  other: {label: "Other", description: "(Please describe in the box below)"},
+} as const;
+
+type DietaryRestriction = keyof typeof DietaryRestrictions;
+
+type Attendee = {
+  key: number,
+  complete: boolean,
+  name: string,
+  hasDietaryRequirements: boolean | null,
+  dietary: (keyof typeof DietaryRestrictions)[],
+  dietaryNotes: string,
+  starter: (keyof typeof Starters) | "None" | "UnsuitableForDietary" | undefined,
+  main: (keyof typeof Mains) | "None" | "UnsuitableForDietary" | undefined,
+  dessert: (keyof typeof Desserts) | "None" | "UnsuitableForDietary" | undefined,
+}
+
+interface FormData {
+    groupName: "",
+    attendance: "all" | "evening" | "ceremony" | "no" | undefined,
+    message: string,
+    attendees: Attendee[],
+}
 
 export default function RSVPPage() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    attendance: "",
-    guestCount: "1",
-    dietaryRestrictions: "",
-    songRequest: "",
+  const [formData, setFormData] = useState<FormData>({
+    groupName: "",
+    attendance: undefined,
     message: "",
-    events: [] as string[],
+    attendees: [],
   })
+
+  const [modalType, setModalType] = useState<string | null>(null)
+  const [attendeeIndex, setAttendeeIndex] = useState<number | null>(null)
+  const [attendeeData, setAttendeeData] = useState<Attendee | null>();
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<{
@@ -30,16 +130,71 @@ export default function RSVPPage() {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
-
-  const handleAttendanceChange = (value: string) => {
+  
+  const handleAttendanceChange = (value: FormData["attendance"]) => {
     setFormData((prev) => ({ ...prev, attendance: value }))
   }
 
-  const handleEventChange = (event: string, checked: boolean) => {
-    setFormData((prev) => ({
-      ...prev,
-      events: checked ? [...prev.events, event] : prev.events.filter((e) => e !== event),
-    }))
+  const handleAttendeeDataChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const name = e.target.name
+    const value: Attendee[keyof Attendee] = e.target.value
+    setAttendeeData(() => ({ ...attendeeData as Attendee, [name]: value }))
+  }
+
+  const openAddModal = () => {
+    setAttendeeData({
+      key: Date.now(),
+      complete: false,
+      name: "",
+      hasDietaryRequirements: null,
+      dietary: [],
+      dietaryNotes: "",
+      starter: undefined,
+      main: undefined,
+      dessert: undefined,
+    })
+    setModalType("add")
+  }
+
+  const openEditModal = (index: number) => {
+    if (typeof formData.attendees[index] !== 'undefined'){
+      setAttendeeIndex(index)
+      setAttendeeData(formData.attendees[index]);
+      setModalType("edit")
+    }
+  }
+
+  const openDeleteModal = (index: number) => {
+    if (typeof formData.attendees[index] !== 'undefined'){
+      setAttendeeIndex(index)
+      setModalType("delete")
+    }
+  }
+
+  const closeModal = () => {
+    setModalType(null)
+    setAttendeeIndex(null)
+  }
+
+  const saveAttendee = () => {
+    let newFormData = {...formData},
+        newAttendee: Attendee = {...attendeeData, complete: true};
+    if (modalType === "add") {
+      newFormData.attendees.push(newAttendee)
+    } else if (modalType === "edit" && attendeeIndex !== null) {
+      newFormData.attendees.splice(attendeeIndex, 1, newAttendee)
+    }
+    setFormData(newFormData)
+    closeModal()
+  }
+
+  const deleteAttendee = () => {
+    if (attendeeIndex !== null) {
+      let newFormData = {...formData};
+      newFormData.attendees.splice(attendeeIndex, 1)
+      setFormData(newFormData)
+    }
+    closeModal()
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -62,18 +217,6 @@ export default function RSVPPage() {
         setSubmitStatus({
           type: "success",
           message: "Thank you for your RSVP! We'll be in touch soon.",
-        })
-        // Reset form on success
-        setFormData({
-          name: "",
-          email: "",
-          phone: "",
-          attendance: "",
-          guestCount: "1",
-          dietaryRestrictions: "",
-          songRequest: "",
-          message: "",
-          events: [],
         })
       } else {
         setSubmitStatus({
@@ -116,50 +259,21 @@ export default function RSVPPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Basic Information */}
             <div className="bg-white/50 p-8 rounded-lg">
               <h2 className="font-serif text-2xl text-wedding-text mb-6">Your Information</h2>
 
               <div className="space-y-4">
                 <div>
                   <label htmlFor="name" className="block text-wedding-text font-medium mb-2">
-                    Full Name *
+                    Name of your group / party / entourage
                   </label>
                   <input
                     type="text"
                     id="name"
                     name="name"
+                    placeholder="e.g. The Berry's"
                     required
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-wedding-text/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-wedding-accent bg-white"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="email" className="block text-wedding-text font-medium mb-2">
-                    Email Address *
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    required
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-wedding-text/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-wedding-accent bg-white"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="phone" className="block text-wedding-text font-medium mb-2">
-                    Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    value={formData.phone}
+                    value={formData.groupName}
                     onChange={handleInputChange}
                     className="w-full px-4 py-3 border border-wedding-text/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-wedding-accent bg-white"
                   />
@@ -172,149 +286,78 @@ export default function RSVPPage() {
               <h2 className="font-serif text-2xl text-wedding-text mb-6">Will you be attending?</h2>
 
               <div className="grid md:grid-cols-2 gap-4">
-                <button
-                  type="button"
-                  onClick={() => handleAttendanceChange("yes")}
-                  className={`p-6 rounded-lg border-2 transition-all ${
-                    formData.attendance === "yes"
-                      ? "border-wedding-accent bg-wedding-accent/10"
-                      : "border-wedding-text/20 bg-white hover:border-wedding-accent/50"
-                  }`}
-                >
-                  <div className="text-center">
-                    <h3 className="font-semibold text-wedding-text text-lg mb-2">Joyfully Accept</h3>
-                    <p className="text-wedding-text/70">Can't wait to celebrate with you!</p>
-                  </div>
-                </button>
-
-                <button
-                  type="button"
+                <LargeButton
+                  active={formData.attendance === 'all'}
+                  onClick={() => handleAttendanceChange("all")}
+                  buttonTitle="Ceremony and Evening"
+                  buttonText="The whole shebang!"
+                />
+                <LargeButton
+                  active={formData.attendance === 'evening'}
+                  onClick={() => handleAttendanceChange("evening")}
+                  buttonTitle="Evening only"
+                  buttonText="Cake, pizza, first dance, and a night of dancing!"
+                />
+                <LargeButton
+                  active={formData.attendance === 'ceremony'}
+                  onClick={() => handleAttendanceChange("ceremony")}
+                  buttonTitle="Ceremony only"
+                  buttonText="Church service and wedding breakfast"
+                />
+                <LargeButton
+                  active={formData.attendance === 'no'}
                   onClick={() => handleAttendanceChange("no")}
-                  className={`p-6 rounded-lg border-2 transition-all ${
-                    formData.attendance === "no"
-                      ? "border-wedding-accent bg-wedding-accent/10"
-                      : "border-wedding-text/20 bg-white hover:border-wedding-accent/50"
-                  }`}
-                >
-                  <div className="text-center">
-                    <h3 className="font-semibold text-wedding-text text-lg mb-2">Regretfully Decline</h3>
-                    <p className="text-wedding-text/70">We'll miss you on our special day</p>
-                  </div>
-                </button>
+                  buttonTitle="Regretfully decline"
+                  buttonText="We're sorry you're unable to join us"
+                />
               </div>
 
-              {formData.attendance === "yes" && (
-                <div className="mt-6">
-                  <label htmlFor="guestCount" className="block text-wedding-text font-medium mb-2">
-                    Number of Guests
-                  </label>
-                  <select
-                    id="guestCount"
-                    name="guestCount"
-                    value={formData.guestCount}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-wedding-text/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-wedding-accent bg-white"
-                  >
-                    <option value="1">1 Guest</option>
-                    <option value="2">2 Guests</option>
-                    <option value="3">3 Guests</option>
-                    <option value="4">4 Guests</option>
-                  </select>
-                </div>
-              )}
-            </div>
+              {typeof formData.attendance !== "undefined" && <div className="bg-white/50 p-8 rounded-lg">
+                <h2 className="font-serif text-2xl text-wedding-text mb-6">{formData.attendance !== "no" ? "Attendees" : "Non-attendees"}</h2>
 
-            {/* Events */}
-            {formData.attendance === "yes" && (
-              <div className="bg-white/50 p-8 rounded-lg">
-                <h2 className="font-serif text-2xl text-wedding-text mb-6">Which events will you attend?</h2>
-
-                <div className="space-y-3">
-                  {[
-                    { id: "ceremony", title: "Wedding Ceremony", desc: "3:00 PM - Rose Garden" },
-                    { id: "cocktails", title: "Cocktail Hour", desc: "4:00 PM - Terrace" },
-                    { id: "reception", title: "Reception & Dinner", desc: "6:00 PM - Grand Ballroom" },
-                    { id: "dancing", title: "Dancing", desc: "8:30 PM - Under the Stars" },
-                  ].map((event) => (
-                    <label
-                      key={event.id}
-                      className={`flex items-center p-4 rounded-lg border-2 cursor-pointer transition-all ${
-                        formData.events.includes(event.id)
-                          ? "border-wedding-accent bg-wedding-accent/10"
-                          : "border-wedding-text/20 bg-white hover:border-wedding-accent/50"
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={formData.events.includes(event.id)}
-                        onChange={(e) => handleEventChange(event.id, e.target.checked)}
-                        className="sr-only"
-                      />
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-wedding-text">{event.title}</h3>
-                        <p className="text-wedding-text/70 text-sm">{event.desc}</p>
-                      </div>
+                {formData.attendees.length === 0 ? (
+                  <p className="text-wedding-text/70 text-center py-8">No {formData.attendance !== "no" ? "attendees" : "non-attendees"} added yet</p>
+                ) : (
+                  <div className="space-y-3 mb-6">
+                    {formData.attendees.map((attendee, index) => (
                       <div
-                        className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
-                          formData.events.includes(event.id)
-                            ? "border-wedding-accent bg-wedding-accent"
-                            : "border-wedding-text/30"
-                        }`}
+                        key={attendee.key}
+                        className="group flex items-center justify-between p-4 bg-white rounded-lg border border-wedding-text/20 hover:border-wedding-accent/50 transition-all"
                       >
-                        {formData.events.includes(event.id) && (
-                          <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path
-                              fillRule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        )}
+                        <div className="flex-1">
+                          <h3 className="font-medium text-wedding-text">{attendee.name}</h3>
+                          {!attendee.complete && <div className="px-3 py-1 text-sm bg-red-100 text-red-600 rounded hover:bg-red-200 transition-colors">Incomplete!</div>}
+                        </div>
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => openEditModal(index)}
+                            className="px-3 py-1 text-sm bg-wedding-accent/10 text-wedding-accent rounded hover:bg-wedding-accent/20 transition-colors"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => openDeleteModal(index)}
+                            className="px-3 py-1 text-sm bg-red-100 text-red-600 rounded hover:bg-red-200 transition-colors"
+                          >
+                            Remove
+                          </button>
+                        </div>
                       </div>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Additional Information */}
-            {formData.attendance === "yes" && (
-              <div className="bg-white/50 p-8 rounded-lg">
-                <h2 className="font-serif text-2xl text-wedding-text mb-6">Additional Information</h2>
-
-                <div className="space-y-4">
-                  <div>
-                    <label htmlFor="dietaryRestrictions" className="block text-wedding-text font-medium mb-2">
-                      Dietary Restrictions or Allergies
-                    </label>
-                    <textarea
-                      id="dietaryRestrictions"
-                      name="dietaryRestrictions"
-                      rows={3}
-                      value={formData.dietaryRestrictions}
-                      onChange={handleInputChange}
-                      placeholder="Please let us know about any dietary restrictions or food allergies..."
-                      className="w-full px-4 py-3 border border-wedding-text/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-wedding-accent bg-white resize-none"
-                    />
+                    ))}
                   </div>
+                )}
 
-                  <div>
-                    <label htmlFor="songRequest" className="block text-wedding-text font-medium mb-2">
-                      Song Request
-                    </label>
-                    <input
-                      type="text"
-                      id="songRequest"
-                      name="songRequest"
-                      value={formData.songRequest}
-                      onChange={handleInputChange}
-                      placeholder="Any song you'd love to hear at our reception?"
-                      className="w-full px-4 py-3 border border-wedding-text/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-wedding-accent bg-white"
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
+                <button
+                  type="button"
+                  onClick={openAddModal}
+                  className="w-full py-3 border-2 border-dashed border-wedding-accent/50 text-wedding-accent rounded-lg hover:border-wedding-accent hover:bg-wedding-accent/5 transition-all"
+                >
+                  + Add {formData.attendance !== "no" ? "Attendee" : "Non-attendee"}
+                </button>
+              </div>}
+            </div>
 
             {/* Message */}
             <div className="bg-white/50 p-8 rounded-lg">
@@ -344,6 +387,180 @@ export default function RSVPPage() {
           </form>
         </div>
       </div>
+
+      {modalType && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          {(modalType === "add" || modalType === "edit") && attendeeData && (
+            <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+              <h3 className="font-serif text-xl text-wedding-text mb-4">
+                {modalType === "add" ? "Add" : "Edit"} {formData.attendance !== "no" ? "attendee" : "non-attendee"}
+              </h3>
+
+              <div className="my-6">
+                <div>
+                  <label className="block text-wedding-text font-medium mb-2">Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={attendeeData.name}
+                    onChange={handleAttendeeDataChange}
+                    className="w-full px-3 py-2 border border-wedding-text/20 rounded focus:outline-none focus:ring-2 focus:ring-wedding-accent"
+                  />
+                </div>
+              </div>
+
+              {formData.attendance !== "no" && <>
+                <hr />
+                <div className="my-6">
+                  <div className="block text-wedding-text font-medium mb-2">Dietary Requirements</div>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <button
+                      type="button"
+                      
+                      className={`p-3 text-center rounded-lg border-2 transition-all ${
+                      attendeeData.hasDietaryRequirements === false
+                          ? "border-wedding-accent bg-wedding-accent/10"
+                          : "border-wedding-text/20 bg-white hover:border-wedding-accent/50"
+                      }`}
+                      onClick={() => setAttendeeData({...attendeeData, hasDietaryRequirements: false})}
+                    >
+                      <h3 className="font-semibold text-wedding-text text-lg mb-2">I don't have any dietary requirements</h3>
+                      <p className="text-wedding-text/70"></p>
+                    </button>
+                    <button
+                      type="button"
+                      className={`p-3 text-center rounded-lg border-2 transition-all ${
+                      attendeeData.hasDietaryRequirements === true
+                          ? "border-wedding-accent bg-wedding-accent/10"
+                          : "border-wedding-text/20 bg-white hover:border-wedding-accent/50"
+                      }`}
+                      onClick={() => setAttendeeData({...attendeeData, hasDietaryRequirements: true})}
+                    >
+                      <h3 className="font-semibold text-wedding-text text-lg mb-0">I have dietary requirements</h3>
+                      <p className="text-wedding-text/70">Vegetarian, vegan, allergies etc</p>
+                    </button>
+                  </div>
+                </div>
+
+                {attendeeData.hasDietaryRequirements && <>
+                  <div className="my-6">
+                    <div className="block text-wedding-text font-medium mb-2">Please select all that apply &hellip;</div>
+                    <div className="grid md:grid-cols-3 gap-1 mb-2">
+                      {(Object.keys(DietaryRestrictions) as DietaryRestriction[]).map(function (restriction) {return (
+                        <label
+                          key={restriction}
+                          className={`flex items-center py-2 cursor-pointer`}
+                        >
+                          <input
+                            type="checkbox"
+                            className="sr-only"
+                            checked={attendeeData.dietary.includes(restriction)}
+                            onChange={(e) => {
+                              const newData = e.target.checked ? [...attendeeData.dietary, restriction] : attendeeData.dietary.filter((i) => i !== restriction)
+                              setAttendeeData(() => ({ ...attendeeData as Attendee, dietary: newData }))
+                            }}
+                          />
+                          <div
+                            className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
+                              attendeeData.dietary.includes(restriction)
+                                ? "border-wedding-accent bg-wedding-accent"
+                                : "border-wedding-text/30"
+                            }`}
+                          >
+                            {attendeeData.dietary.includes(restriction) && (
+                              <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                  fillRule="evenodd"
+                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            )}
+                          </div>
+                          <div className="flex-1 ml-2">
+                            <div className="font-semibold text-wedding-text">{DietaryRestrictions[restriction].label}</div>
+                            {
+                              typeof DietaryRestrictions[restriction].description === "string"
+                              && <div className="text-xs text-wedding-text/70">{DietaryRestrictions[restriction].description}</div>
+                            }
+                          </div>
+                        </label>
+                      )})}
+                    </div>
+                  </div>
+
+                  <div className="my-6">
+                    <label className="block text-wedding-text font-medium mb-2" htmlFor="dietaryRestrictions">Additional info for dietary restrictions</label>
+                    <textarea
+                      id="dietaryRestrictions"
+                      name="dietaryRestrictions"
+                      value={attendeeData.dietaryNotes}
+                      onChange={handleAttendeeDataChange}
+                      rows={2}
+                      className="w-full px-3 py-2 border border-wedding-text/20 rounded focus:outline-none focus:ring-2 focus:ring-wedding-accent resize-none"
+                    />
+                  </div>
+
+                  <div className="my-6 p-4 bg-wedding-accent/30 text-wedding-text rounded border-2 border-wedding-accent bg-wedding-accent">
+                    Depending on your requirements, we may need to contact you before the day in order to discuss arrangements with our vendor.
+                    Whilst our vendors will endeavour to cater for all needs, there may be situations where this is not possible.
+                    If this does arise, we will discuss this with you beforehand.
+                    The ability to select a meal option does not guarantee its suitablity for your dietary requirements.
+                  </div>
+                </>}
+
+                <hr className="my-6" />
+
+                
+              </>}
+
+              <div className="flex gap-3 mt-6">
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  className="flex-1 px-4 py-2 border border-wedding-text/20 text-wedding-text rounded hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={saveAttendee}
+                  className="flex-1 px-4 py-2 bg-wedding-accent text-white rounded hover:bg-wedding-accent/90 transition-colors"
+                >
+                  {modalType === "add" ? "Add" : "Save"}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {modalType === "delete" && editingAttendee && (
+            <div className="bg-white rounded-lg p-6 w-full max-w-sm">
+              <h3 className="font-serif text-xl text-wedding-text mb-4">Confirm Delete</h3>
+              <p className="text-wedding-text/70 mb-6">
+                Are you sure you want to remove {editingAttendee.name} from the attendee list?
+              </p>
+
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={closeModal}
+                  className="flex-1 px-4 py-2 border border-wedding-text/20 text-wedding-text rounded hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={deleteAttendee}
+                  className="flex-1 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       <Footer />
     </main>
   )
