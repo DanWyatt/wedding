@@ -7,60 +7,67 @@ import { FloatingNavbar } from "@/components/floating-navbar"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { LargeButton } from "@/components/ui/rsvp/large-button"
+import { Checkbox } from "@/components/ui/rsvp/checkbox"
 
 interface MealChoice {
-  name: string,
+  key: string,
+  title: string,
   description: string,
   notSuitableFor: string[],
 }
 
-interface MealChoices {
-  [key: string]: MealChoice;
-};
+type MealChoices = MealChoice[];
 
-const Starters = {
-  GoatsCheeseTartlet: {
-    name: 'Goat’s cheese tartlet',
+const Starters = [
+  {
+    key: 'GoatsCheeseTartlet',
+    title: 'Goat’s cheese tartlet',
     description: 'Goat’s cheese and sundried tomato tartlet, rocket salad and basil mayo (v)',
     notSuitableFor: ['vegan'],
   },
-  PrawnCocktail: {
-    name: 'Prawn cocktail',
+  {
+    key: "PrawnCocktail",
+    title: 'Prawn cocktail',
     description: 'Prawn cocktail, smoked salmon shavings',
     notSuitableFor: ['vegetarian', 'vegan', 'fish', 'crustaceans'],
   },
-} as MealChoices
+] as MealChoices
 
-const Mains = {
-  PorkPlatter: {
-    name: 'Roast Pork Sharing Platter',
+const Mains = [
+  {
+    key: "PorkPlatter",
+    title: 'Roast Pork Sharing Platter',
     description: 'Joints of slow roasted Somerset pork with thyme & apricots',
     notSuitableFor: ['vegetarian', 'vegan'],
   },
-  MushroomWellington: {
-    name: 'Mushroom Wellington',
+  {
+    key: "MushroomWellington",
+    title: 'Mushroom Wellington',
     description: 'A meat-free twist on the classic',
     notSuitableFor: [],
   },
-} as MealChoices
+] as MealChoices
 
-const Desserts = {
-  Profiteroles: {
-    name: 'Profiteroles',
+const Desserts = [
+  {
+    key: "Profiteroles",
+    title: 'Profiteroles',
     description: 'Cream filled profiteroles served with warm chocolate sauce (v)',
     notSuitableFor: ['dairy', 'vegan'],
   },
-  Pavlova: {
-    name: 'Berry pavlova',
+  {
+    key: "Pavlova",
+    title: 'Berry pavlova',
     description: 'Served with raspberry coulis (v)',
     notSuitableFor: ['vegan'],
   },
-  LemonTart: {
-    name: 'Lemon tart',
+  {
+    key: "LemonTart",
+    title: 'Lemon tart',
     description: 'Served with raspberry coulis and lemon sorbet (v)',
     notSuitableFor: ['vegan'],
   },
-} as MealChoices
+] as MealChoices
 
 const DietaryRestrictions: {
   readonly [key: string]: {
@@ -96,9 +103,9 @@ type Attendee = {
   hasDietaryRequirements: boolean | null,
   dietary: (keyof typeof DietaryRestrictions)[],
   dietaryNotes: string,
-  starter: (keyof typeof Starters) | "None" | "UnsuitableForDietary" | undefined,
-  main: (keyof typeof Mains) | "None" | "UnsuitableForDietary" | undefined,
-  dessert: (keyof typeof Desserts) | "None" | "UnsuitableForDietary" | undefined,
+  starter: typeof Starters[number]["key"] | "None" | "UnsuitableForDietary" | undefined,
+  main: typeof Mains[number]["key"] | "None" | "UnsuitableForDietary" | undefined,
+  dessert: typeof Desserts[number]["key"] | "None" | "UnsuitableForDietary" | undefined,
 }
 
 interface FormData {
@@ -139,6 +146,52 @@ export default function RSVPPage() {
     const name = e.target.name
     const value: Attendee[keyof Attendee] = e.target.value
     setAttendeeData(() => ({ ...attendeeData as Attendee, [name]: value }))
+  }
+
+  const mealChoicesOptions = (course: "starter" | "main" | "dessert") => {
+    let mealList = {starter: Starters, main: Mains, dessert: Desserts}[course];
+    return attendeeData && (
+      <div className="my-6 mb-1">
+        <div className="block text-wedding-text font-medium mb-2">Choose your {course}</div>
+        <div className="grid md:grid-cols-2 gap-4">
+          {
+            mealList.map((choice: MealChoice) => (
+              <button
+                key={choice.key}
+                type="button"
+                className={`p-3 text-center rounded-lg border-2 transition-all ${
+                attendeeData[course] === choice.key
+                    ? "border-wedding-accent bg-wedding-accent/10"
+                    : "border-wedding-text/20 bg-white hover:border-wedding-accent/50"
+                }`}
+                onClick={() => setAttendeeData({...attendeeData, [course]: choice.key})}
+              >
+                <h3 className="font-semibold text-wedding-text text-lg mb-2">{choice.title}</h3>
+                <p className="text-wedding-text/70">{choice.description}</p>
+              </button>
+            ))
+          }
+          <Checkbox
+            checked={attendeeData[course] === "None"}
+            onChange={() => setAttendeeData({...attendeeData, [course]: "None"})}
+            label={"No " + course}
+            description=""
+          />
+          {attendeeData.hasDietaryRequirements && <button
+            type="button"
+            className={`p-3 text-center rounded-lg border-2 transition-all ${
+            attendeeData[course] === "UnsuitableForDietary"
+                ? "border-wedding-accent bg-wedding-accent/10"
+                : "border-wedding-text/20 bg-white hover:border-wedding-accent/50"
+            }`}
+            onClick={() => setAttendeeData({...attendeeData, [course]: "UnsuitableForDietary"})}
+          >
+            <h3 className="font-semibold text-wedding-text text-lg mb-2">Unsuitable with diet requirements</h3>
+            <p className="text-wedding-text/70"></p>
+          </button>}
+        </div>
+      </div>
+    )
   }
 
   const openAddModal = () => {
@@ -447,44 +500,16 @@ export default function RSVPPage() {
                     <div className="block text-wedding-text font-medium mb-2">Please select all that apply &hellip;</div>
                     <div className="grid md:grid-cols-3 gap-1 mb-2">
                       {(Object.keys(DietaryRestrictions) as DietaryRestriction[]).map(function (restriction) {return (
-                        <label
+                        <Checkbox
                           key={restriction}
-                          className={`flex items-center py-2 cursor-pointer`}
-                        >
-                          <input
-                            type="checkbox"
-                            className="sr-only"
-                            checked={attendeeData.dietary.includes(restriction)}
-                            onChange={(e) => {
-                              const newData = e.target.checked ? [...attendeeData.dietary, restriction] : attendeeData.dietary.filter((i) => i !== restriction)
-                              setAttendeeData(() => ({ ...attendeeData as Attendee, dietary: newData }))
-                            }}
-                          />
-                          <div
-                            className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
-                              attendeeData.dietary.includes(restriction)
-                                ? "border-wedding-accent bg-wedding-accent"
-                                : "border-wedding-text/30"
-                            }`}
-                          >
-                            {attendeeData.dietary.includes(restriction) && (
-                              <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                <path
-                                  fillRule="evenodd"
-                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                  clipRule="evenodd"
-                                />
-                              </svg>
-                            )}
-                          </div>
-                          <div className="flex-1 ml-2">
-                            <div className="font-semibold text-wedding-text">{DietaryRestrictions[restriction].label}</div>
-                            {
-                              typeof DietaryRestrictions[restriction].description === "string"
-                              && <div className="text-xs text-wedding-text/70">{DietaryRestrictions[restriction].description}</div>
-                            }
-                          </div>
-                        </label>
+                          checked={attendeeData.dietary.includes(restriction)}
+                          onChange={(e) => {
+                            const newData = e.target.checked ? [...attendeeData.dietary, restriction] : attendeeData.dietary.filter((i) => i !== restriction)
+                            setAttendeeData(() => ({ ...attendeeData as Attendee, dietary: newData }))
+                          }}
+                          label={DietaryRestrictions[restriction].label}
+                          description={DietaryRestrictions[restriction].description}
+                        />
                       )})}
                     </div>
                   </div>
@@ -511,7 +536,12 @@ export default function RSVPPage() {
 
                 <hr className="my-6" />
 
-                
+                {(formData.attendance === 'all' || formData.attendance === 'ceremony') && attendeeData.hasDietaryRequirements !== null && <>
+                  {mealChoicesOptions("starter")}
+                  {mealChoicesOptions("main")}
+                  {mealChoicesOptions("dessert")}
+                </>}
+                  
               </>}
 
               <div className="flex gap-3 mt-6">
