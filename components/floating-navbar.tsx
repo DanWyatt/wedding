@@ -17,7 +17,7 @@ const navLinks = [
 ]
 
 export function FloatingNavbar() {
-  const [isScrolled, setIsScrolled] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(window.scrollY > 50)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const isHomePage = usePathname() === "/"
 
@@ -37,9 +37,6 @@ export function FloatingNavbar() {
   }
 
   const isLargeNavbar = usePathname() === "/" && !isScrolled
-  const textColor = isLargeNavbar && !isMobileMenuOpen ? "text-white" : "text-wedding-text"
-  const logoSize = isLargeNavbar ? "text-4xl md:text-6xl" : "text-4xl"
-  const dropShadow = isLargeNavbar ? "drop-shadow-lg" : ""
 
   return (
     <>
@@ -57,13 +54,12 @@ export function FloatingNavbar() {
                 href="/"
                 className={cn(
                   "font-serif transition-all duration-300 flex items-center gap-2",
-                  logoSize,
-                  textColor,
-                  dropShadow,
+                  isLargeNavbar ? "text-4xl md:text-6xl drop-shadow-lg" : "text-4xl",
+                  isLargeNavbar && !isMobileMenuOpen ? "text-white" : "text-wedding-text",
                 )}
               >
                 <span>Amy</span>
-                <span className="font-script text-wedding-accent">and</span>
+                <span className={`relative x-2 -mx-1 font-script text-wedding-accent text-5xl/4 ${isLargeNavbar ? "md:text-7xl/6" : ""}`}>and</span>
                 <span>Daniel</span>
               </Link>
             </div>
