@@ -4,9 +4,11 @@ function Checkbox({
     label = "",
     description = "",
     checked = false,
+    disabled = false,
     onChange = (e: ChangeEvent<HTMLInputElement>) => {e.preventDefault()},
   ...props
 }) {
+  checked = checked && !disabled
 
   return (
   <label
@@ -16,13 +18,17 @@ function Checkbox({
       type="checkbox"
       className="sr-only"
       checked={checked}
+      disabled={disabled}
       onChange={onChange}
     />
     <div
       className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
-        checked
-          ? "border-wedding-accent bg-wedding-accent"
-          : "border-wedding-text/30"
+        disabled
+          ? 'border-wedding-text/10 bg-wedding-text/10'
+          : (checked
+            ? "border-wedding-accent bg-wedding-accent"
+            : "border-wedding-text/30"
+          )
       }`}
     >
       {checked && (
@@ -35,11 +41,11 @@ function Checkbox({
         </svg>
       )}
     </div>
-    <div className="flex-1 ml-2">
-      <div className="font-semibold text-wedding-text">{label}</div>
+    <div className="flex-1 ml-2.5">
+      <div className={`font-semibold ${disabled ? "text-wedding-text/60" : "text-wedding-text"}`}>{label}</div>
       {
-        typeof description === "string"
-        && <div className="text-xs text-wedding-text/70">{description}</div>
+        typeof description === "string" && description.length > 0
+        && <div className={`text-sm -mt-0.5 ${disabled ? "text-wedding-text/40" : "text-wedding-text/70"}`}>{description}</div>
       }
     </div>
   </label>
