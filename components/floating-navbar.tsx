@@ -17,7 +17,7 @@ const navLinks = [
 ]
 
 export function FloatingNavbar() {
-  const [isScrolled, setIsScrolled] = useState(window.scrollY > 50)
+  const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const isHomePage = usePathname() === "/"
 
@@ -27,6 +27,7 @@ export function FloatingNavbar() {
         setIsScrolled(window.scrollY > 50)
       }
 
+      handleScroll()
       window.addEventListener("scroll", handleScroll)
       return () => window.removeEventListener("scroll", handleScroll)
     }, [])
