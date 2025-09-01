@@ -108,6 +108,7 @@ interface FormData {
     attendance: "all" | "evening" | "ceremony" | "no" | undefined,
     message: string,
     attendees: Attendee[],
+    agreeTerms: boolean,
 }
 
 export default function RSVPPage() {
@@ -116,6 +117,7 @@ export default function RSVPPage() {
     attendance: undefined,
     message: "",
     attendees: [],
+    agreeTerms: false,
   })
 
   const [modalType, setModalType] = useState<string | null>(null)
@@ -131,6 +133,10 @@ export default function RSVPPage() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleAgreeTermsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prev) => ({ ...prev, agreeTerms: !!e.target.checked }))
   }
   
   const handleAttendanceChange = (value: FormData["attendance"]) => {
@@ -464,13 +470,32 @@ export default function RSVPPage() {
               />
             </div>
 
-            {(!formData.groupName || !formData.attendees.length) && <div className="bg-wedding-accent/20 p-8 rounded-lg">
+            <div className="bg-white/50 p-8 rounded-lg">
+              <h2 className="font-serif text-2xl text-wedding-text mb-6">Let's keep it fun</h2>
+              <p>We want everyone to enjoy the day as much as we do, however we do have a few ground rules to keep the day enjoyable for everyone. We respectfully ask for you to adhere to the following:</p>
+              <ul className="list-disc pl-4 my-4">
+                <li>We want you to let your hair down and enjoy the night, this isn't a dry wedding but please don't get too wasted. This is a day to remember, not one to not-remember!</li>
+                <li>Unless indicated on your invitation, unfortunatly we cannot allow children.</li>
+                <li>Please do not take photos during the wedding ceremony, we have a photographer that will be taking photos during this.</li>
+                <li>For any photos or videos taken during the day and evening, please wait until the following day before posting them to social media (Facebook, Instagram etc.)</li>
+              </ul>
+
+              <Checkbox
+                name="agreeTerms"
+                checked={formData.agreeTerms}
+                onChange={handleAgreeTermsChange}
+                label="I agree to the above"
+              />
+            </div>
+
+            {(!formData.groupName || !formData.attendees.length || !formData.agreeTerms) && <div className="bg-wedding-accent/20 p-8 rounded-lg">
               <h2 className="font-serif text-2xl text-wedding-text mb-6">
                 <CircleAlert className="inline-block mr-1 -mt-1.5" /> Please resolve the following&hellip;
               </h2>
               <ul className="list-disc pl-4">
                 {!formData.groupName && <li>Please enter a group name</li>}
                 {!formData.attendees.length && <li>Please add some {formData.attendance !== "no" ? "attendees" : "non-attendees"}</li>}
+                {!formData.agreeTerms && <li>Please agree to the rules above</li>}
               </ul>
             </div>}
 
