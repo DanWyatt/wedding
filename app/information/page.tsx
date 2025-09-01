@@ -5,21 +5,64 @@ import { FloatingNavbar } from "@/components/floating-navbar"
 import { Footer } from "@/components/footer"
 import { ChevronDown, ChevronUp } from "lucide-react"
 
+const events = [
+  {
+    time: "12 Noon",
+    event: "Wedding ceremony at Combe St Nicholas Church"
+  },
+  {
+    time: "1:30 PM",
+    event: "Arrive at Cott Farm for drinks, photos & canapes"
+  },
+  {
+    time: "3:00 PM",
+    event: "Wedding breakfast"
+  },
+  {
+    time: "5:45 PM",
+    event: "Speeches"
+  },
+  {
+    time: "6:30 PM",
+    event: "Evening guests arrive"
+  },
+  {
+    time: "7:25 PM",
+    event: "Cake cutting"
+  },
+  {
+    time: "7:30 PM",
+    event: "First dance, music & dancing"
+  },
+  {
+    time: "8:30 PM",
+    event: "Woodfired pizzas"
+  },
+  {
+    time: "9:30 PM",
+    event: "More music and dancing"
+  },
+  {
+    time: "Midnight",
+    event: "Carriages & camping"
+  },
+]
+
 const faqData = [
   {
     question: "What should I wear?",
     answer:
-      "We've requested garden party attire for the ceremony. Think smart casual with comfortable shoes as we'll be on grass. For the reception, you're welcome to dress up a bit more if you'd like!",
+      "The wedding is themed around wildflowers so you may wish to wear something in keeping with this, but as long as it's suitable for the occasion then it's fine. Be aware that parking at the venue is on a field, so be mindful of footwear etc.",
   },
   {
-    question: "Will the ceremony be outdoors?",
+    question: "Is there parking available at the church?",
     answer:
-      "Yes, weather permitting! The ceremony will take place in the beautiful gardens of Willowbrook Manor. If it rains, we'll move to the elegant indoor ballroom with stunning garden views.",
+      "The church itself does not have parking, but you should find parking around the village. However please be respectful of the residents and do not block access.",
   },
   {
-    question: "Is there parking available?",
+    question: "Is there parking available at the venue?",
     answer:
-      "Yes, Willowbrook Manor has ample free parking on-site. There's also valet service available if you prefer.",
+      "Yes, on arrival you will be signposted to the carpark. This will be on a field with plenty of space.",
   },
   {
     question: "Can I bring a plus-one?",
@@ -29,17 +72,27 @@ const faqData = [
   {
     question: "Are children welcome?",
     answer:
-      "We love children, but we've decided to have an adults-only celebration to allow all our guests to relax and enjoy the evening. We hope you understand!",
+      "Unless indicated on your invitation, then unfortunatly not. We hope you understand.",
   },
   {
-    question: "What time should I arrive?",
+    question: "What time should I arrive for the ceremony?",
     answer:
-      "Please arrive by 2:45 PM for the 3:00 PM ceremony. This gives everyone time to find their seats and settle in before we begin.",
+      "Please arrive by 11:45am to allow time for parking and getting seated.",
+  },
+  {
+    question: "What time should I arrive for the evening reception?",
+    answer:
+      "Please arrive at 6:30pm or onwards.",
   },
   {
     question: "Will there be transportation provided?",
     answer:
-      "We recommend arranging your own transportation. The venue is easily accessible by car and taxi services are readily available in the area.",
+      "No, you will need to arrange your own transport, either by car or by taxi. Combe St Nicholas is served by the Hatch Green Coaches 99 bus, however it is not possible to travel to the reception via public transport.",
+  },
+  {
+    question: "For those driving, are alcohol-free drinks available?",
+    answer:
+      "Yes, the bar will stock a wide range of non-alcoholic drinks.",
   },
   {
     question: "What if I have dietary restrictions?",
@@ -49,12 +102,12 @@ const faqData = [
   {
     question: "Can I take photos during the ceremony?",
     answer:
-      "We'd love for you to enjoy the moment with us! Please feel free to take photos, but we ask that you remain seated during the ceremony. Our photographer will capture all the key moments.",
+      "We have a photographer that will be taking photos, please instead be in the moment and enjoy the day.",
   },
   {
-    question: "What's the weather backup plan?",
+    question: "Can I post photos taken after the ceremony to social media (Facebook, Instagram etc)?",
     answer:
-      "If weather doesn't cooperate, the ceremony will move to Willowbrook Manor's beautiful indoor ballroom. The reception will continue as planned in the same ballroom.",
+      "Please wait until the following day to post any photos or videos to social media. When filming, please repect the privacy and wishes of the other guests.",
   },
 ]
 
@@ -99,71 +152,28 @@ export default function InformationPage() {
           <div className="mb-16">
             <h2 className="font-serif text-3xl text-wedding-text text-center mb-8">Order of the Day</h2>
             <div className="bg-white/50 p-8 rounded-lg">
-              <div className="grid md:grid-cols-2 gap-8">
-                <div>
-                  <h3 className="font-serif text-2xl text-wedding-text mb-6">Ceremony Day</h3>
-                  <div className="space-y-4">
-                    <div className="flex items-start gap-4">
-                      <div className="w-20 text-wedding-accent font-semibold flex-shrink-0">2:45 PM</div>
-                      <div className="text-wedding-text">Guest arrival and seating</div>
-                    </div>
-                    <div className="flex items-start gap-4">
-                      <div className="w-20 text-wedding-accent font-semibold flex-shrink-0">3:00 PM</div>
-                      <div className="text-wedding-text">Wedding ceremony begins</div>
-                    </div>
-                    <div className="flex items-start gap-4">
-                      <div className="w-20 text-wedding-accent font-semibold flex-shrink-0">3:30 PM</div>
-                      <div className="text-wedding-text">Ceremony concludes, confetti moment</div>
-                    </div>
-                    <div className="flex items-start gap-4">
-                      <div className="w-20 text-wedding-accent font-semibold flex-shrink-0">3:45 PM</div>
-                      <div className="text-wedding-text">Photos with family and wedding party</div>
-                    </div>
-                    <div className="flex items-start gap-4">
-                      <div className="w-20 text-wedding-accent font-semibold flex-shrink-0">4:00 PM</div>
-                      <div className="text-wedding-text">Cocktail hour begins on the terrace</div>
-                    </div>
+              {events.map((eventsItem, index) => (
+                <div key={eventsItem.time} className={
+                  `flex items-center gap-4 relative before:absolute before:w-1 before:left-2 before:z-2 before:bg-stone-200
+                  ${(index === 0 || index === events.length - 1) ? "before:h-[50%]" : "before:h-full"}
+                  ${(index > 0) ? "before:top-0" : "before:bottom-0"}`}
+                >
+                  <div className="flex-shrink-0 relative before:block before:w-5 before:h-5 before:rounded-full before:bg-stone-200 before:relative before:z-2"></div>
+                  <div className="flex-shrink-0 relative before:block before:absolute before:-bottom-4">
+                    <div className="w-20 text-lg/15 text-center text-wedding-accent font-semibold">{eventsItem.time}</div>
                   </div>
+                  <div className="text-2xl text-wedding-text">{eventsItem.event}</div>
                 </div>
-                <div>
-                  <h3 className="font-serif text-2xl text-wedding-text mb-6">Reception Evening</h3>
-                  <div className="space-y-4">
-                    <div className="flex items-start gap-4">
-                      <div className="w-20 text-wedding-accent font-semibold flex-shrink-0">5:30 PM</div>
-                      <div className="text-wedding-text">Wedding party introductions</div>
-                    </div>
-                    <div className="flex items-start gap-4">
-                      <div className="w-20 text-wedding-accent font-semibold flex-shrink-0">6:00 PM</div>
-                      <div className="text-wedding-text">Wedding breakfast served</div>
-                    </div>
-                    <div className="flex items-start gap-4">
-                      <div className="w-20 text-wedding-accent font-semibold flex-shrink-0">7:30 PM</div>
-                      <div className="text-wedding-text">Speeches and toasts</div>
-                    </div>
-                    <div className="flex items-start gap-4">
-                      <div className="w-20 text-wedding-accent font-semibold flex-shrink-0">8:30 PM</div>
-                      <div className="text-wedding-text">First dance and party begins</div>
-                    </div>
-                    <div className="flex items-start gap-4">
-                      <div className="w-20 text-wedding-accent font-semibold flex-shrink-0">11:00 PM</div>
-                      <div className="text-wedding-text">Evening food served</div>
-                    </div>
-                    <div className="flex items-start gap-4">
-                      <div className="w-20 text-wedding-accent font-semibold flex-shrink-0">12:00 AM</div>
-                      <div className="text-wedding-text">Sparkler send-off and farewell</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
 
           {/* FAQ Section */}
           <div>
             <h2 className="font-serif text-3xl text-wedding-text text-center mb-8">Frequently Asked Questions</h2>
-            <div className="space-y-4">
+            <div className="space-y-4 grid lg:grid-cols-2 gap-2">
               {faqData.map((faq, index) => (
-                <FAQItem key={index} question={faq.question} answer={faq.answer} />
+                <div><FAQItem key={index} question={faq.question} answer={faq.answer} /></div>
               ))}
             </div>
           </div>
@@ -171,10 +181,7 @@ export default function InformationPage() {
           <div className="mt-12 text-center">
             <p className="text-wedding-text/80 mb-4">Still have questions?</p>
             <p className="text-wedding-text">
-              Feel free to reach out to us directly at{" "}
-              <a href="mailto:amy.daniel.wedding@email.com" className="text-wedding-accent hover:underline">
-                amy.daniel.wedding@email.com
-              </a>
+              Feel free to reach out to us directly.
             </p>
           </div>
         </div>
