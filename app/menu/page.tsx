@@ -10,7 +10,7 @@ export default function MenuPage() {
         <div className="max-w-4xl mx-auto px-4">
           <h1 className="font-serif text-4xl md:text-6xl text-wedding-text text-center mb-8">Wedding Menu</h1>
           <p className="text-lg text-wedding-text/80 text-center mb-12 max-w-2xl mx-auto">
-            Discover our carefully curated menu featuring seasonal ingredients and dishes that celebrate our love story.
+            Discover our carefully curated menu featuring local ingredients.
           </p>
 
           {/* Welcome drinks and canapes - 2 blocks */}
@@ -21,16 +21,12 @@ export default function MenuPage() {
                 <h3 className="font-serif text-2xl text-wedding-text mb-6">Welcome Drinks</h3>
                 <div className="space-y-4">
                   <div>
-                    <h4 className="font-semibold text-wedding-text">Amy's Garden Spritz</h4>
-                    <p className="text-wedding-text/70">Elderflower, prosecco, and fresh herbs</p>
+                    <h4 className="font-semibold text-wedding-text">Somerset Orchard Mist Cocktail</h4>
+                    <p className="text-wedding-text/70">The 'Somerset Pimms' &ndash; Kingston Black Aperitif, farm‑pressed apple juice, lemonade</p>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-wedding-text">Daniel's Old Fashioned</h4>
-                    <p className="text-wedding-text/70">Premium bourbon with orange and cherry</p>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-wedding-text">Non-alcoholic option</h4>
-                    <p className="text-wedding-text/70">Sparkling elderflower and cucumber water</p>
+                    <h4 className="font-semibold text-wedding-text">Elderflower Presse</h4>
+                    <p className="text-wedding-text/70">Non-alcoholic sparkling elderflower</p>
                   </div>
                 </div>
               </div>
@@ -39,16 +35,20 @@ export default function MenuPage() {
                 <h3 className="font-serif text-2xl text-wedding-text mb-6">Canapes</h3>
                 <div className="space-y-4">
                   <div>
-                    <h4 className="font-semibold text-wedding-text">Seasonal Bruschetta</h4>
-                    <p className="text-wedding-text/70">Fresh tomatoes, basil, and mozzarella on artisan bread</p>
+                    <h4 className="font-semibold text-wedding-text">Bruschetta <small className="text-wedding-text/60">(v)</small></h4>
+                    <p className="text-wedding-text/70">Topped with tomato, basil & red onion</p>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-wedding-text">Prosciutto & Fig Crostini</h4>
-                    <p className="text-wedding-text/70">With honey goat cheese and arugula</p>
+                    <h4 className="font-semibold text-wedding-text">Smoked salmon</h4>
+                    <p className="text-wedding-text/70">With chive crème fraîche, served on blinis</p>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-wedding-text">Stuffed Mushrooms</h4>
-                    <p className="text-wedding-text/70">Wild mushrooms with herbs and parmesan</p>
+                    <h4 className="font-semibold text-wedding-text">East Coker pork sausages</h4>
+                    <p className="text-wedding-text/70">Honey & mustard glazed</p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-wedding-text">Panko & sesame breaded chicken</h4>
+                    <p className="text-wedding-text/70">With sweet chilli</p>
                   </div>
                 </div>
               </div>
@@ -63,30 +63,27 @@ export default function MenuPage() {
                 <h3 className="font-serif text-2xl text-wedding-text mb-6">Starter</h3>
                 <div className="space-y-4">
                   <div>
-                    <h4 className="font-semibold text-wedding-text">Roasted Butternut Squash Soup</h4>
-                    <p className="text-wedding-text/70">With sage and toasted pumpkin seeds</p>
+                    <h4 className="font-semibold text-wedding-text">Goat’s cheese and sundried tomato tartlet <small className="text-wedding-text/60">(v)</small></h4>
+                    <p className="text-wedding-text/70">With rocket salad and basil mayo</p>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-wedding-text">Smoked Salmon Terrine</h4>
-                    <p className="text-wedding-text/70">With dill cream cheese and capers</p>
+                    <h4 className="font-semibold text-wedding-text">Prawn cocktail</h4>
+                    <p className="text-wedding-text/70">With smoked salmon shavings</p>
                   </div>
                 </div>
               </div>
 
               <div className="bg-white/50 p-8 rounded-lg">
                 <h3 className="font-serif text-2xl text-wedding-text mb-6">Main Course</h3>
+                <p className="text-wedding-text/70 mb-4">Served with sharing bowls of roasted new potatoes, seasonal salads, crusty bread</p>
                 <div className="space-y-4">
                   <div>
-                    <h4 className="font-semibold text-wedding-text">Herb-Crusted Salmon</h4>
-                    <p className="text-wedding-text/70">With lemon butter sauce and seasonal vegetables</p>
+                    <h4 className="font-semibold text-wedding-text">Roast Pork Sharing Platter</h4>
+                    <p className="text-wedding-text/70">Joints of slow roasted Somerset pork with thyme & apricots</p>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-wedding-text">Beef Tenderloin</h4>
-                    <p className="text-wedding-text/70">With red wine reduction and roasted potatoes</p>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-wedding-text">Vegetarian Wellington</h4>
-                    <p className="text-wedding-text/70">Roasted vegetables in puff pastry with mushroom gravy</p>
+                    <h4 className="font-semibold text-wedding-text">Mushroom Wellington <small className="text-wedding-text/60">(v)</small></h4>
+                    <p className="text-wedding-text/70">A meat-free twist on the classic</p>
                   </div>
                 </div>
               </div>
@@ -95,16 +92,16 @@ export default function MenuPage() {
                 <h3 className="font-serif text-2xl text-wedding-text mb-6">Dessert</h3>
                 <div className="space-y-4">
                   <div>
-                    <h4 className="font-semibold text-wedding-text">Wedding Cake</h4>
-                    <p className="text-wedding-text/70">Three-tier vanilla cake with berry filling</p>
+                    <h4 className="font-semibold text-wedding-text">Profiteroles <small className="text-wedding-text/60">(v)</small></h4>
+                    <p className="text-wedding-text/70">Cream filled profiteroles served with warm chocolate sauce</p>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-wedding-text">Chocolate Mousse</h4>
-                    <p className="text-wedding-text/70">Rich chocolate mousse with fresh berries</p>
+                    <h4 className="font-semibold text-wedding-text">Berry pavlova <small className="text-wedding-text/60">(v)</small></h4>
+                    <p className="text-wedding-text/70">Served with raspberry coulis</p>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-wedding-text">Seasonal Fruit Tart</h4>
-                    <p className="text-wedding-text/70">Pastry cream tart with fresh seasonal fruits</p>
+                    <h4 className="font-semibold text-wedding-text">Lemon tart <small className="text-wedding-text/60">(v)</small></h4>
+                    <p className="text-wedding-text/70">Served with raspberry coulis and lemon sorbet</p>
                   </div>
                 </div>
               </div>
@@ -116,23 +113,23 @@ export default function MenuPage() {
             <h2 className="font-serif text-3xl text-wedding-text text-center mb-8">Evening food</h2>
             <div className="max-w-2xl mx-auto">
               <div className="bg-white/50 p-8 rounded-lg">
-                <h3 className="font-serif text-2xl text-wedding-text mb-6 text-center">Late Night Bites</h3>
-                <div className="space-y-4">
+                <h3 className="font-serif text-2xl text-wedding-text mb-6 text-center">Woodfired Pizzas</h3>
+                <p className="mb-4 text-center">Fresh dough, rolled, topped and baked in Cott Farm's own woodfired pizza oven</p>
+                <div className="space-y-4 flex flex-wrap gap-2 justify-between">
                   <div>
-                    <h4 className="font-semibold text-wedding-text">Gourmet Sliders</h4>
-                    <p className="text-wedding-text/70">Mini beef and chicken burgers with artisan toppings</p>
+                    <h4 className="font-semibold text-wedding-text">Classic Margherita <small className="text-wedding-text/60">(v)</small></h4>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-wedding-text">Wood-Fired Pizza</h4>
-                    <p className="text-wedding-text/70">Selection of margherita, pepperoni, and vegetarian pizzas</p>
+                    <h4 className="font-semibold text-wedding-text">Meat Special</h4>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-wedding-text">Loaded Nachos</h4>
-                    <p className="text-wedding-text/70">With guacamole, salsa, and sour cream</p>
+                    <h4 className="font-semibold text-wedding-text">Florentine <small className="text-wedding-text/60">(v)</small></h4>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-wedding-text">Sweet Treats</h4>
-                    <p className="text-wedding-text/70">Mini donuts and chocolate-dipped strawberries</p>
+                    <h4 className="font-semibold text-wedding-text">Hawaiian</h4>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-wedding-text">Spicy Pepperoni</h4>
                   </div>
                 </div>
               </div>
