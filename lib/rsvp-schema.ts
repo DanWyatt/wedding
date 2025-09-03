@@ -1,17 +1,21 @@
 import { z } from "zod"
+import { DietaryRestriction, MealChoice, Starters, Mains, Desserts } from "@/app/rsvp/const"
+
+const attendeeSchema = z.object({
+  name: z.string().min(1, "Attendee name is required").max(100, "Attendee name must be less than 100 characters"),,
+  hasDietaryRequirements: z.boolean(),
+  dietary: z.string<DietaryRestriction>(),
+  dietaryNotes: z.string().optional(),
+  starter: z.string<typeof Starters[number]["key"] | "None" | "UnsuitableForDietary">(),
+  main: z.string<typeof Mains[number]["key"] | "None" | "UnsuitableForDietary">(),
+  dessert: z.string<typeof Desserts[number]["key"] | "None" | "UnsuitableForDietary">(),
+});
 
 export const rsvpSchema = z.object({
-  name: z.string().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
-  email: z.string().email("Please enter a valid email address"),
-  phone: z.string().optional(),
-  attendance: z.enum(["yes", "no"], {
-    required_error: "Please select your attendance status",
-  }),
-  guestCount: z.string().optional(),
-  dietaryRestrictions: z.string().max(500, "Dietary restrictions must be less than 500 characters").optional(),
-  songRequest: z.string().max(200, "Song request must be less than 200 characters").optional(),
-  message: z.string().max(1000, "Message must be less than 1000 characters").optional(),
-  events: z.array(z.string()).optional(),
+  groupName: z.string().min(1, "Group name is required").max(100, "Group name must be less than 100 characters"),
+  attendance: z.enum(["all", "evening", "ceremony", "no"]),
+  message: z.string().optional(),
+  agreeTerms: z.literal<boolean>(true, { error: () => ({ message: "You must agree to the rules", }), }),
 })
 
 export type RSVPFormData = z.infer<typeof rsvpSchema>
