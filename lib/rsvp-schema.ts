@@ -4,7 +4,7 @@ import { DietaryRestriction, MealChoice, Starters, Mains, Desserts } from "@/app
 const attendeeSchema = z.object({
   name: z.string().min(1, "Attendee name is required").max(100, "Attendee name must be less than 100 characters"),,
   hasDietaryRequirements: z.boolean(),
-  dietary: z.string<DietaryRestriction>(),
+  dietary: z.array(z.string<DietaryRestriction>()),
   dietaryNotes: z.string().optional(),
   starter: z.string<typeof Starters[number]["key"] | "None" | "UnsuitableForDietary">(),
   main: z.string<typeof Mains[number]["key"] | "None" | "UnsuitableForDietary">(),
