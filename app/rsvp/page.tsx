@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { DietaryRestrictions, DietaryRestriction, MealChoice, Starters, Mains, Desserts } from "@/app/rsvp/const"
 import { FloatingNavbar } from "@/components/floating-navbar"
 import { Footer } from "@/components/footer"
@@ -41,13 +41,19 @@ export default function RSVPPage() {
 
   const [modalType, setModalType] = useState<string | null>(null)
   const [attendeeIndex, setAttendeeIndex] = useState<number | null>(null)
-  const [attendeeData, setAttendeeData] = useState<Attendee | null>();
+  const [attendeeData, setAttendeeData] = useState<Attendee | null>()
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<{
     type: "success" | "error" | null
     message: string
   }>({ type: null, message: "" })
+
+  useEffect(() => {
+    if (process.env.NEXT_PUBLIC_VERCEL_ENV === "production" && submitStatus.type !== "success" && window.localStorage.getItem("rsvpSubmitted") === "yes") {
+      setSubmitStatus({type: "success", message: "You have already submitted your RSVP. Please get in touch with us if you need to change anything."})
+    }
+  })
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -226,6 +232,7 @@ export default function RSVPPage() {
       const result = await response.json()
 
       if (response.ok) {
+        localStorage.setItem("rsvpSubmitted", 'yes')
         setSubmitStatus({
           type: "success",
           message: "Thank you for your RSVP! We'll be in touch soon.",
