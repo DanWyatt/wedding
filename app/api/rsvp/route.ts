@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
       headers: {
         'Content-Type': 'application/json',
         'X-Body-HMAC': hash,
-        'X-RSVP-Is-Live': process.env.NODE_ENV === 'production' ? '1' : '0'
+        'X-RSVP-Is-Live': process.env.VERCEL_ENV === 'production' ? '1' : '0'
       },
       body: jsonData
     });
