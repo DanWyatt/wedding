@@ -258,19 +258,9 @@ export default function RSVPPage() {
             Please let us know if you'll be joining us for our special day. We can't wait to celebrate with you!
           </p>
 
-          {submitStatus.type && (
-            <div
-              className={`mb-8 p-4 rounded-lg text-center ${
-                submitStatus.type === "success"
-                  ? "bg-green-100 text-green-800 border border-green-200"
-                  : "bg-red-100 text-red-800 border border-red-200"
-              }`}
-            >
-              {submitStatus.message}
-            </div>
-          )}
+          {submitStatus.type === 'success' && <div className="bg-wedding-accent/20 p-8 rounded-lg">{submitStatus.message}</div>}
 
-          <form onSubmit={handleSubmit} className="space-y-8">
+          {submitStatus.type !== 'success' && <form onSubmit={handleSubmit} className="space-y-8">
             <div className="bg-white/50 p-8 rounded-lg">
               <h2 className="font-serif text-2xl text-wedding-text mb-6">Your Information</h2>
 
@@ -389,7 +379,7 @@ export default function RSVPPage() {
               />
             </div>
 
-            <div className="bg-white/50 p-8 rounded-lg">
+            {formData.attendance !== 'no' && <div className="bg-white/50 p-8 rounded-lg">
               <h2 className="font-serif text-2xl text-wedding-text mb-6">Let's keep it fun</h2>
               <p>We want everyone to enjoy the day as much as we do, however we do have a few ground rules to keep the day enjoyable for everyone. We respectfully ask for you to adhere to the following:</p>
               <ul className="list-disc pl-4 my-4">
@@ -405,29 +395,33 @@ export default function RSVPPage() {
                 onChange={handleAgreeTermsChange}
                 label="I agree to the above"
               />
-            </div>
+            </div>}
 
-            {(!formData.groupName || !formData.attendees.length || !formData.agreeTerms) && <div className="bg-wedding-accent/20 p-8 rounded-lg">
+            {(!formData.groupName || !formData.attendees.length || (formData.attendance !== 'no' && !formData.agreeTerms)) && <div className="bg-wedding-accent/20 p-8 rounded-lg">
               <h2 className="font-serif text-2xl text-wedding-text mb-6">
                 <CircleAlert className="inline-block mr-1 -mt-1.5" /> Please resolve the following&hellip;
               </h2>
               <ul className="list-disc pl-4">
                 {!formData.groupName && <li>Please enter a group name</li>}
                 {!formData.attendees.length && <li>Please add some {formData.attendance !== "no" ? "attendees" : "non-attendees"}</li>}
-                {!formData.agreeTerms && <li>Please agree to the rules above</li>}
+                {!formData.agreeTerms && formData.attendance !== 'no' && <li>Please agree to the rules above</li>}
               </ul>
+            </div>}
+
+            {submitStatus.type === 'error' && <div className="bg-wedding-accent/20 p-8 rounded-lg">
+              <p><CircleAlert className="inline-block mr-1 -mt-1.5" /> {submitStatus.message}</p>
             </div>}
 
             <div className="text-center">
               <Button
                 type="submit"
-                disabled={isSubmitting || !formData.groupName || !formData.attendees.length}
+                disabled={isSubmitting || !formData.groupName || !formData.attendees.length || (formData.attendance !== 'no' && !formData.agreeTerms)}
                 className={`bg-wedding-accent hover:bg-wedding-accent/90 text-white px-12 py-4 rounded-full text-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed`}
               >
                 {isSubmitting ? "Submitting..." : "Submit RSVP"}
               </Button>
             </div>
-          </form>
+          </form>}
         </div>
       </div>
 
