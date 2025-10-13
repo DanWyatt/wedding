@@ -6,16 +6,16 @@ export default function MenuPage() {
     <main className="bg-wedding-cream min-h-screen">
       <FloatingNavbar />
 
-      <div className="pt-32 pb-16">
+      <div className="text-center pt-32 pb-16">
         <div className="max-w-4xl mx-auto px-4">
-          <h1 className="font-serif text-4xl md:text-6xl text-wedding-text text-center mb-8">Wedding Menu</h1>
-          <p className="text-lg text-wedding-text/80 text-center mb-12 max-w-2xl mx-auto">
+          <h1 className="font-serif text-4xl md:text-6xl text-wedding-text mb-8">Wedding Menu</h1>
+          <p className="text-lg text-wedding-text/80 mb-12 max-w-2xl mx-auto">
             Discover our carefully curated menu featuring local ingredients.
           </p>
 
           {/* Welcome drinks and canapes - 2 blocks */}
           <div className="mb-16">
-            <h2 className="font-serif text-3xl text-wedding-text text-center mb-8">Welcome drinks and canapes</h2>
+            <h2 className="font-serif text-3xl text-wedding-text mb-8">Welcome drinks and canapes</h2>
             <div className="grid md:grid-cols-2 gap-8">
               <div className="bg-white/50 p-8 rounded-lg">
                 <h3 className="font-serif text-2xl text-wedding-text mb-6">Welcome Drinks</h3>
@@ -57,7 +57,7 @@ export default function MenuPage() {
 
           {/* Wedding breakfast - 3 blocks */}
           <div className="mb-16">
-            <h2 className="font-serif text-3xl text-wedding-text text-center mb-8">Wedding breakfast</h2>
+            <h2 className="font-serif text-3xl text-wedding-text mb-8">Wedding breakfast</h2>
             <div className="grid md:grid-cols-3 gap-8">
               <div className="bg-white/50 p-8 rounded-lg">
                 <h3 className="font-serif text-2xl text-wedding-text mb-6">Starter</h3>
@@ -110,11 +110,11 @@ export default function MenuPage() {
 
           {/* Evening food - 1 block */}
           <div>
-            <h2 className="font-serif text-3xl text-wedding-text text-center mb-8">Evening food</h2>
+            <h2 className="font-serif text-3xl text-wedding-text mb-8">Evening food</h2>
             <div className="max-w-2xl mx-auto">
               <div className="bg-white/50 p-8 rounded-lg">
-                <h3 className="font-serif text-2xl text-wedding-text mb-6 text-center">Woodfired Pizzas</h3>
-                <p className="mb-4 text-center">Fresh dough, rolled, topped and baked in Cott Farm's own woodfired pizza oven</p>
+                <h3 className="font-serif text-2xl text-wedding-text mb-6">Woodfired Pizzas</h3>
+                <p className="mb-4">Fresh dough, rolled, topped and baked in Cott Farm's own woodfired pizza oven</p>
                 <div className="space-y-4 flex flex-wrap gap-2 justify-between">
                   <div>
                     <h4 className="font-semibold text-wedding-text">Classic Margherita <small className="text-wedding-text/60">(v)</small></h4>
