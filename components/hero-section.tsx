@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { DateTime } from "luxon";
 
-const heroImages = ["/romantic-wedding-sunset.png", "/elegant-wedding-venue.png", "/wedding-ceremony-setup.png"]
+const heroImages = ["/Amy-Dan-50.jpg", "/Amy-Dan-71.jpg", "/Amy-Dan-14.jpg"]
 
 export function HeroSection() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
