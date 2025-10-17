@@ -36,13 +36,16 @@ export default function GiftsPage() {
 
       <div className="pt-32 pb-16">
         <div className="max-w-4xl mx-auto px-4">
-          <h1 className="font-serif text-4xl md:text-6xl text-wedding-text text-center mb-8">Honeymoon Fund</h1>
+          <h1 className="font-serif text-4xl md:text-6xl text-wedding-text text-center mb-8">Gifts</h1>
           <p className="text-lg text-wedding-text/80 text-center mb-12 max-w-2xl mx-auto">
-            Your presence is the greatest gift of all. For those who wish to contribute to our honeymoon adventure, we
+            Your presence is the greatest gift of all. For those who wish to contribute to our honeymoon getaway, we
             would be incredibly grateful for your support.
           </p>
+          <p className="text-lg text-wedding-text/80 text-center mb-12 max-w-2xl mx-auto">
+            More details on our plans and how to contribute will be available closer to the time.
+          </p>
 
-          <div className="bg-white/50 p-8 rounded-lg mb-8">
+          {/*<div className="bg-white/50 p-8 rounded-lg mb-8">
             <h2 className="font-serif text-3xl text-wedding-text text-center mb-8">Our Italian Adventure</h2>
             <div className="grid md:grid-cols-2 gap-8 items-center">
               <div>
@@ -138,7 +141,7 @@ export default function GiftsPage() {
                 </p>
               </div>
             </div>
-          </div>
+          </div>*/}
         </div>
       </div>
       <Footer />
