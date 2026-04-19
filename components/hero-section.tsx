@@ -56,12 +56,6 @@ export function HeroSection() {
         </h1>
         <p className="text-xl md:text-2xl text-white/90 mb-4 drop-shadow-md">Amy and Daniel are getting married</p>
         <p className="text-lg md:text-xl text-white/80 mb-8 drop-shadow-md">Save the date for our special day</p>
-        <Button
-          asChild
-          className="bg-wedding-accent hover:bg-wedding-accent/90 text-white px-8 py-3 rounded-full text-lg shadow-lg"
-        >
-          <Link href="/rsvp">RSVP Now</Link>
-        </Button>
       </div>
     </section>
   )

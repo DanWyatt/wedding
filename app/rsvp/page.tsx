@@ -217,6 +217,7 @@ export default function RSVPPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    return;
     setIsSubmitting(true)
     setSubmitStatus({ type: null, message: "" })
 
@@ -262,12 +263,14 @@ export default function RSVPPage() {
         <div className="max-w-2xl mx-auto px-4">
           <h1 className="font-serif text-4xl md:text-6xl text-wedding-text text-center mb-8">RSVP</h1>
           <p className="text-lg text-wedding-text/80 text-center mb-12">
-            Please let us know if you'll be joining us for our special day. We can't wait to celebrate with you!
+            Please let us know if you'll be joining us for our special day. <br/>We can't wait to celebrate with you!
           </p>
 
-          {submitStatus.type === 'success' && <div className="bg-wedding-accent/20 p-8 rounded-lg">{submitStatus.message}</div>}
+          <div className="bg-wedding-accent/20 p-8 rounded-lg">The RSVP form is now closed. If you have any queries, please reach out to us directly.</div>
 
-          {submitStatus.type !== 'success' && <form onSubmit={handleSubmit} className="space-y-8">
+          {false && submitStatus.type === 'success' && <div className="bg-wedding-accent/20 p-8 rounded-lg">{submitStatus.message}</div>}
+
+          {false && submitStatus.type !== 'success' && <form onSubmit={handleSubmit} className="space-y-8">
             <div className="bg-white/50 p-8 rounded-lg">
               <h2 className="font-serif text-2xl text-wedding-text mb-6">Your Information</h2>
 
@@ -432,7 +435,7 @@ export default function RSVPPage() {
         </div>
       </div>
 
-      {modalType && (
+      {false && modalType && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           {(modalType === "add" || modalType === "edit") && attendeeData && (
             <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -565,7 +568,7 @@ export default function RSVPPage() {
             </div>
           )}
 
-          {modalType === "delete" && attendeeData && (
+          {false && modalType === "delete" && attendeeData && (
             <div className="bg-white rounded-lg p-6 w-full max-w-sm">
               <h3 className="font-serif text-xl text-wedding-text mb-4">Confirm Delete</h3>
               <p className="text-wedding-text/70 mb-6">
