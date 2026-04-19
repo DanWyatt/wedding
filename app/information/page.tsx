@@ -68,7 +68,7 @@ export default function InformationPage() {
             <h2 className="font-serif text-3xl text-wedding-text text-center mb-8">Frequently Asked Questions</h2>
             <div className="space-y-4 grid lg:grid-cols-2 gap-2">
               {faqData.map((faq, index) => (
-                <div><FAQItem key={index} question={faq.question} answer={faq.answer} /></div>
+                <div><FAQItem key={faq.question} question={faq.question} answer={faq.answer} /></div>
               ))}
             </div>
           </div>
