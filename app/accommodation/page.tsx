@@ -8,10 +8,15 @@ export default function AccommodationPage() {
       <div className="pt-32 pb-16">
         <div className="max-w-4xl mx-auto px-4">
           <h1 className="font-serif text-4xl md:text-6xl text-wedding-text text-center mb-8">Accommodation</h1>
-          <p className="text-lg text-wedding-text/80 text-center mb-12 max-w-2xl mx-auto">
-            This page isn't yet quite ready. In the meantime please consult Cott Farm's <a
+          <p className="text-lg text-wedding-text/80 text-center mb-6 max-w-2xl mx-auto">
+            Please view Cott Farm's <a
               href="https://cottfarmwedding.co.uk/nearby-accommodation/" target="_blank" rel="noopener nofollow noreferrer external" className="text-wedding-accent hover:underline"
             >list of nearby accommodation</a>.
+          </p>
+          <p className="text-lg text-wedding-text/80 text-center mb-12 max-w-2xl mx-auto">
+            Alternatively, both Crewkerne and Yeovil are quickly accessible along the A30.<br/>
+            Crewkerne is <span className="whitespace-nowrap">4 miles</span> approximately <span className="whitespace-nowrap">7 minutes</span>,
+            and Yeovil is <span className="whitespace-nowrap">5.4 miles</span> and approximately <span className="whitespace-nowrap">12 minutes</span>.
           </p>
         </div>
       </div>
