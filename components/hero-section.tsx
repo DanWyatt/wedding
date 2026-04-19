@@ -10,7 +10,7 @@ const heroImages = ["/Amy-Dan-50.jpg", "/Amy-Dan-71.jpg", "/Amy-Dan-14.jpg"]
 export function HeroSection() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const weddingDate = DateTime.fromObject({year: 2026, month: 5, day: 2, hour: 12, minute: 0, second: 0}, {zone: 'Europe/London'});
-  const getDateDuration = () => weddingDate.diff(DateTime.now(), ['months', 'days', 'hours'])
+  const getDateDuration = () => weddingDate.diff(DateTime.now(), ['days', 'hours'])
   const [dateDifference, setDateDifference] = useState(getDateDuration())
 
   useEffect(() => {
@@ -49,8 +49,7 @@ export function HeroSection() {
       {/* Content */}
       <div className="text-center max-w-4xl mx-auto px-4 relative z-10">
         <h1 className="font-serif text-6xl md:text-4xl lg:text-6xl text-white mb-6 drop-shadow-lg">
-          <span className="block md:inline-block">{Math.max(0, dateDifference.months)} months<span className="hidden md:inline">,&nbsp;</span></span>
-          <span className="block md:inline-block">{Math.max(0, dateDifference.days)} days<span className="hidden md:inline">,&nbsp;</span></span>
+          <span className="block md:inline-block">{Math.max(0, dateDifference.days)} days<span className="hidden md:inline"> and&nbsp;</span></span>
           <span className="block md:inline-block">{Math.max(0, Math.ceil(dateDifference.hours))} hours<span className="hidden md:inline">&nbsp;</span></span>
           <span className="block md:inline-block">to go</span>
         </h1>
