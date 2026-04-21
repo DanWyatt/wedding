@@ -5,22 +5,22 @@ export const events = [
     eventType: "ceremony"
   },
   {
-    time: "1:30 PM",
-    event: "Arrive at Cott Farm for drinks, photos & canapes",
+    time: "2:00 PM",
+    event: "Arrive at Cott Farm for drinks, photos & canapés",
     eventType: "breakfast"
   },
   {
-    time: "3:00 PM",
+    time: "3:15 PM",
     event: "Wedding breakfast",
     eventType: "breakfast"
   },
   {
-    time: "5:45 PM",
+    time: "6:00 PM",
     event: "Speeches",
     eventType: "breakfast"
   },
   {
-    time: "6:30 PM",
+    time: "7:00 PM",
     event: "Evening guests arrive",
     eventType: "evening"
   },
@@ -35,13 +35,13 @@ export const events = [
     eventType: "evening"
   },
   {
-    time: "8:30 PM",
+    time: "7:45 PM",
     event: "Woodfired pizzas",
     eventType: "evening"
   },
   {
-    time: "9:30 PM",
-    event: "More music and dancing",
+    time: "8:45 PM",
+    event: "Sparklers",
     eventType: "evening"
   },
   {
